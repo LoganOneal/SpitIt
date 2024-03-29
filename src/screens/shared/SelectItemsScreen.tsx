@@ -23,11 +23,12 @@ const PlusIcon = (props): IconElement => (
 const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }): React.ReactElement => {
     const { receiptId } = route.params;
     const authState = useAppSelector(selectAuthState);
-    const { getReceiptById, updateItemsPaidStatus } = useFirestore();
+    const { getReceiptById, updateItemsPaidStatus, getFirestoreUser } = useFirestore();
     const [items, setItems] = useState<IReceiptItem[] | undefined>([]);
     const [receipt, setReceipt] = useState<IReceipt | undefined>(undefined);
     const [selectedItems, setSelectedItems] = useState<IReceiptItem[]>([]);
     const [individualTotal, setIndividualTotal] = useState<number>(0);
+    const [memberNames, setMemberNames] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const fetchReceipts = async () => {
@@ -41,6 +42,9 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         fetchReceipts();
     }, []);
 
+  
+      
+      
     // update total price on item select change 
     useEffect(() => {
         const total = selectedItems.reduce((acc, item) => acc + (item.price ?? 0), 0);

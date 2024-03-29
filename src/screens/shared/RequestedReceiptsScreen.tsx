@@ -8,10 +8,11 @@ import { FlatList } from 'react-native';
 import { Button, Spinner } from '@ui-kitten/components';
 import { useAppDispatch } from "../../store/hook";
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { IFirebaseUser } from '../../interfaces/IAuthentication';
 
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
-  const { getUserReceipts } = useFirestore();
+  const { getUserReceipts, getFirestoreUser } = useFirestore();
   const [requestedReceipts, setRequestedReceipts] = useState<IReceipt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,7 +30,27 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
       try {
         setIsLoading(true);
         const { requestedReceipts } = await getUserReceipts();
-        setRequestedReceipts(requestedReceipts);
+        const receiptsWithAdditionalData = await Promise.all(requestedReceipts.map(async (receipt) => {
+          // Fetch host name
+          const hostData = await getFirestoreUser(receipt.host?.toString() || '');
+          const hostName = hostData ? hostData.displayName : "Unknown Host";
+          console.log("receipt", receipt);
+          // Fetch member names
+          const memberNames = await Promise.all((receipt.guests ?? []).map(async (memberId: string) => { // Explicitly specify the type of 'memberId' as a string
+          const memberData = await getFirestoreUser(memberId);
+          return memberData ? memberData.displayName : "Unknown Member";
+          }));
+          return {
+            ...receipt,
+            hostName,
+            memberNames
+          };
+        }));
+        setRequestedReceipts(receiptsWithAdditionalData.map(receipt => ({
+          ...receipt,
+          hostName: receipt.hostName || undefined,
+          memberNames: receipt.memberNames.filter(name => name !== null) as string[]
+        })));
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching host receipts:', error);
@@ -54,11 +75,12 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
             contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
             renderItem={({ item }) => (
               <TouchableWithoutFeedback onPress={() => handleReceiptCardPressGuest(item)}>
-                <ReceiptCard {...item} />
+                <ReceiptCard {...item} members={item.memberNames} host={item.hostName as string | undefined}/>
               </TouchableWithoutFeedback>
             )}
           />
       </View>
+
     </View>
   );
 };

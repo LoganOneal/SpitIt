@@ -22,8 +22,11 @@ export interface IReceiptCategory {
     vendor?: string;
     image?: string;
     location?: ILocation;
-    host?: IFirebaseUser;
-    members?: IFirebaseUser[];
+    host?: string;
+    hostName?: string;
+    memberNames?: string[];
+    members?: string[];
+    guests?: string[];
     items?: IReceiptItem[];
     total: number;
     subtotal: number;
