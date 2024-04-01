@@ -269,6 +269,7 @@ export const useFirestore = () => {
           uid: userData.uid,
           cashAppName: userData.cashAppName || "",
           venmoName: userData.venmoName || "",
+          paypalEmail: userData.paypalEmail || "",
         };
       } else {
         console.log("Firestore User Document does not exist");
@@ -390,6 +391,22 @@ export const useFirestore = () => {
     }
   };
 
+  const updatePaypalEmail = async (paypalEmail: string) => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          paypalEmail: paypalEmail,
+        });
+        console.log("Paypal email updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating paypal email:", error);
+      throw error;
+    }
+  }
+
   return {
     createReceipt,
     addNewUserToReceipt,
@@ -400,10 +417,11 @@ export const useFirestore = () => {
     getUserReceipts,
     getFirestoreUser,
     reauthenticateUser,
-    updateCashAppName,
     updateDisplayName,
     updateEmailAddress,
     updatePhoneNumber,
-    updateVenmoName
+    updateVenmoName,
+    updateCashAppName,
+    updatePaypalEmail
   };
 };

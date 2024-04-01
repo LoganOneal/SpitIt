@@ -46,6 +46,11 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         const payment = total + total * .11
         Linking.openURL('https://cash.app/$' + host?.cashAppName + '/' + payment)
       }
+      else if (paymentMethod == "paypal") {
+        console.log("checkout with paypal")
+        const payment = total + total * .11
+        Linking.openURL('https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=' + host?.paypalEmail + '&amount=' + payment + '&currency_code=USD')  
+      }
     }
     else {
       console.log("Error: Could not obtain host's payment information")
@@ -70,7 +75,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         >
           <View style={styles.header}>
             <Button
-              style={styles.button}
+              style={[styles.button, paymentMethod == "venmo" && styles.selectedButton]}
               appearance='outline'
               status='info'
               size='giant'
@@ -79,7 +84,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
               Venmo
             </Button>
             <Button
-              style={styles.button}
+              style={[styles.button, paymentMethod == "cash app" && styles.selectedButton]}
               appearance='outline'
               status='info'
               size='giant'
@@ -88,7 +93,16 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
               Cash App
             </Button>
             <Button
-              style={styles.button}
+              style={[styles.button, paymentMethod == "paypal" && styles.selectedButton]}
+              appearance='outline'
+              status='info'
+              size='giant'
+              onPress={() => setPaymentMethod("paypal")}
+            >
+              PayPal
+            </Button>
+            <Button
+              style={[styles.button, paymentMethod == "plaid" && styles.selectedButton]}
               appearance='outline'
               status='info'
               size='giant'
@@ -182,6 +196,12 @@ const styles = StyleSheet.create({
     marginTop: 15,
     margin: 2,
   },
+  selectedButton: {
+    width: "100%",
+    marginTop: 15,
+    margin: 2,
+    backgroundColor: 'lightblue',
+  }
 });
 
 export default MyReceiptsScreen;

@@ -58,7 +58,6 @@ const SettingsScreen = ({ navigation }: any) => {
                   onPress={() => {
                     navigation.navigate("EditProfile", {
                       profile: profile,
-                      navigation: navigation,
                     });
                   }}
                   style={styles.row}
@@ -69,9 +68,7 @@ const SettingsScreen = ({ navigation }: any) => {
               <View style={styles.rowWrapper}>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate("EditProfilePassword", {
-                      navigation: navigation,
-                    });
+                    navigation.navigate("EditProfilePassword");
                   }}
                   style={styles.row}
                 >
@@ -83,7 +80,6 @@ const SettingsScreen = ({ navigation }: any) => {
                   onPress={() => {
                     navigation.navigate("EditPaymentSettings", {
                       profile: profile,
-                      navigation: navigation,
                     });
                   }}
                   style={styles.row}

@@ -180,7 +180,8 @@ export const useAuth = () => {
       const fbProfile: IFirebaseUser = {
         ...profile, firebaseUID: user.uid,
         cashAppName: null,
-        venmoName: null
+        venmoName: null,
+        paypalEmail: null,
       };
       console.log("getProfile SUCCESS");
       return fbProfile;
