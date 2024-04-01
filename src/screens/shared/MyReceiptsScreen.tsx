@@ -27,7 +27,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
     const fetchReceipts = async () => {
       try {
         setIsLoading(true);
-        const { hostReceipts } = await getUserReceipts();
+        const { hostReceipts, requestedReceipts } = await getUserReceipts();
         setHostReceipts(hostReceipts);
         setIsLoading(false);
       } catch (error) {

@@ -20,20 +20,6 @@ const EditPaymentSettingsScreen = ({
 
   const handleSave = async () => {
     if (
-      cashAppName !== profile?.cashAppName &&
-      cashAppName !== "" &&
-      cashAppName !== null
-    ) {
-      try {
-        await updateCashAppName(cashAppName);
-        setCashAppNameError("");
-      } catch (error) {
-        console.log("Error updating cash app name:", error);
-        setCashAppNameError("Error updating Cash App Username.. Please try again");
-        return;
-      }
-      
-    } else if (
       venmoName !== profile?.venmoName &&
       venmoName !== "" &&
       venmoName !== null
@@ -44,6 +30,20 @@ const EditPaymentSettingsScreen = ({
       } catch (error) {
         console.log("Error updating venmo name:", error);
         setVenmoNameError("Error updating Venmo Username.. Please try again");
+        return;
+      }
+      
+    } else if (
+      cashAppName !== profile?.cashAppName &&
+      cashAppName !== "" &&
+      cashAppName !== null
+    ) {
+      try {
+        await updateCashAppName(cashAppName);
+        setCashAppNameError("");
+      } catch (error) {
+        console.log("Error updating cash app name:", error);
+        setCashAppNameError("Error updating Cash App Username.. Please try again");
         return;
       }
     }
@@ -65,23 +65,6 @@ const EditPaymentSettingsScreen = ({
           <Text style={styles.title}>Payment Settings</Text>
         </View>
         <View style={styles.rowWrapper}>
-          <Text style={styles.rowLabel}>Cash App Username</Text>
-          <View style={styles.row}>
-            <View style={styles.rowValueContainer}>
-              <TextInput
-                style={styles.rowValue}
-                mode="outlined"
-                value={cashAppName}
-                onChangeText={setCashAppName}
-                placeholder={profile?.cashAppName || "Enter Cash App Username"}
-              />
-            </View>
-          </View>
-          <View>
-            <Text style={styles.errorText}>{cashAppNameError}</Text>
-          </View>
-        </View>
-        <View style={styles.rowWrapper}>
           <Text style={styles.rowLabel}>Venmo Username</Text>
           <View style={styles.row}>
             <View style={styles.rowValueContainer}>
@@ -96,6 +79,23 @@ const EditPaymentSettingsScreen = ({
           </View>
           <View>
             <Text style={styles.errorText}>{venmoNameError}</Text>
+          </View>
+        </View>
+        <View style={styles.rowWrapper}>
+          <Text style={styles.rowLabel}>Cash App Username</Text>
+          <View style={styles.row}>
+            <View style={styles.rowValueContainer}>
+              <TextInput
+                style={styles.rowValue}
+                mode="outlined"
+                value={cashAppName}
+                onChangeText={setCashAppName}
+                placeholder={profile?.cashAppName || "Enter Cash App Username"}
+              />
+            </View>
+          </View>
+          <View>
+            <Text style={styles.errorText}>{cashAppNameError}</Text>
           </View>
         </View>
         <Button
@@ -173,4 +173,3 @@ const styles = StyleSheet.create({
       paddingLeft: 24,
     },
   });
-  
