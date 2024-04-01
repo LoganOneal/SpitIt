@@ -17,9 +17,6 @@ const EditPaymentSettingsScreen = ({
   const [cashAppName, setCashAppName] = useState("");
   const { updateCashAppName } = useFirestore();
   const [cashAppNameError, setCashAppNameError] = useState("");
-  console.log("\nProfile")
-  console.log(profile)
-  console.log("\n")
 
   const handleSave = async () => {
     if (

@@ -379,8 +379,6 @@ export const useFirestore = () => {
       const user = auth.currentUser;
       if (user) {
         const userRef = doc(db, "users", user.uid);
-        console.log(userRef)
-        console.log(cashAppName)
         await updateDoc(userRef, {
           cashAppName: cashAppName,
         });
