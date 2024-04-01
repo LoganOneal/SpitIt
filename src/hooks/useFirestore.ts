@@ -75,7 +75,7 @@ export const useFirestore = () => {
       }
   
       const hostReceiptsIds = userDoc.data()?.hostReceipts || [];
-      const requestedReceiptsIds = userDoc.data()?.memberReceipts || [];
+      const requestedReceiptsIds = userDoc.data()?.requestedReceipts || [];
   
       const hostReceipts: IReceipt[] = [];
       const requestedReceipts: IReceipt[] = [];
@@ -404,6 +404,6 @@ export const useFirestore = () => {
     updateDisplayName,
     updateEmailAddress,
     updatePhoneNumber,
-    updateVenmoName,
+    updateVenmoName
   };
 };
