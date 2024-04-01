@@ -12,11 +12,12 @@ const EditPaymentSettingsScreen = ({
 }) => {
   const { profile } = route.params;
   const [venmoName, setVenmoName] = useState("");
-  const { updateVenmoName } = useFirestore();
   const [venmoNameError, setVenmoNameError] = useState("");
   const [cashAppName, setCashAppName] = useState("");
-  const { updateCashAppName } = useFirestore();
   const [cashAppNameError, setCashAppNameError] = useState("");
+  const [paypalEmail, setPaypalEmail] = useState("");
+  const [paypalEmailError, setPaypalEmailError] = useState("");
+  const { updateVenmoName, updateCashAppName, updatePaypalEmail } = useFirestore();
 
   const handleSave = async () => {
     if (
@@ -33,7 +34,8 @@ const EditPaymentSettingsScreen = ({
         return;
       }
       
-    } else if (
+    } 
+    if (
       cashAppName !== profile?.cashAppName &&
       cashAppName !== "" &&
       cashAppName !== null
@@ -44,6 +46,20 @@ const EditPaymentSettingsScreen = ({
       } catch (error) {
         console.log("Error updating cash app name:", error);
         setCashAppNameError("Error updating Cash App Username.. Please try again");
+        return;
+      }
+    }
+    if (
+      paypalEmail !== profile?.paypalEmail &&
+      paypalEmail !== "" &&
+      paypalEmail !== null
+    ) {
+      try {
+        await updatePaypalEmail(paypalEmail);
+        setPaypalEmailError("");
+      } catch (error) {
+        console.log("Error updating paypal email:", error);
+        setPaypalEmailError("Error updating PayPal email.. Please try again");
         return;
       }
     }
@@ -96,6 +112,23 @@ const EditPaymentSettingsScreen = ({
           </View>
           <View>
             <Text style={styles.errorText}>{cashAppNameError}</Text>
+          </View>
+        </View>
+        <View style={styles.rowWrapper}>
+          <Text style={styles.rowLabel}>PayPal Email</Text>
+          <View style={styles.row}>
+            <View style={styles.rowValueContainer}>
+              <TextInput
+                style={styles.rowValue}
+                mode="outlined"
+                value={paypalEmail}
+                onChangeText={setPaypalEmail}
+                placeholder={profile?.paypalEmail || "Enter PayPal Email Address"}
+              />
+            </View>
+          </View>
+          <View>
+            <Text style={styles.errorText}>{paypalEmailError}</Text>
           </View>
         </View>
         <Button
