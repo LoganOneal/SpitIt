@@ -14,9 +14,29 @@ const EditPaymentSettingsScreen = ({
   const [venmoName, setVenmoName] = useState("");
   const { updateVenmoName } = useFirestore();
   const [venmoNameError, setVenmoNameError] = useState("");
+  const [cashAppName, setCashAppName] = useState("");
+  const { updateCashAppName } = useFirestore();
+  const [cashAppNameError, setCashAppNameError] = useState("");
+  console.log("\nProfile")
+  console.log(profile)
+  console.log("\n")
 
   const handleSave = async () => {
     if (
+      cashAppName !== profile?.cashAppName &&
+      cashAppName !== "" &&
+      cashAppName !== null
+    ) {
+      try {
+        await updateCashAppName(cashAppName);
+        setCashAppNameError("");
+      } catch (error) {
+        console.log("Error updating cash app name:", error);
+        setCashAppNameError("Error updating Cash App Username.. Please try again");
+        return;
+      }
+      
+    } else if (
       venmoName !== profile?.venmoName &&
       venmoName !== "" &&
       venmoName !== null
@@ -46,6 +66,23 @@ const EditPaymentSettingsScreen = ({
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Payment Settings</Text>
+        </View>
+        <View style={styles.rowWrapper}>
+          <Text style={styles.rowLabel}>Cash App Username</Text>
+          <View style={styles.row}>
+            <View style={styles.rowValueContainer}>
+              <TextInput
+                style={styles.rowValue}
+                mode="outlined"
+                value={cashAppName}
+                onChangeText={setCashAppName}
+                placeholder={profile?.cashAppName || "Enter Cash App Username"}
+              />
+            </View>
+          </View>
+          <View>
+            <Text style={styles.errorText}>{cashAppNameError}</Text>
+          </View>
         </View>
         <View style={styles.rowWrapper}>
           <Text style={styles.rowLabel}>Venmo Username</Text>
@@ -90,7 +127,8 @@ const styles = StyleSheet.create({
     header: {
       paddingLeft: 24,
       paddingRight: 24,
-      marginBottom: 12,
+      marginBottom: 24,
+      borderColor: "#e3e3e3",
     },
     title: {
       fontSize: 32,
@@ -104,10 +142,8 @@ const styles = StyleSheet.create({
       height: 50,
     },
     rowWrapper: {
-      borderTopWidth: 1,
-      borderColor: "#e3e3e3",
-      paddingBottom: 12,
-      paddingTop: 12,
+      paddingBottom: 6,
+      paddingTop: 6,
     },
     rowLabel: {
       fontSize: 17,
