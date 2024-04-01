@@ -11,6 +11,7 @@ export interface IFirebaseResponse {
 // extend the firebase user object
 export interface IFirebaseUser extends UserInfo {
   firebaseUID: string | null;
+  cashAppName: string | null;
   venmoName: string | null;
 }
 

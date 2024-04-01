@@ -179,6 +179,7 @@ export const useAuth = () => {
     user?.providerData.forEach((profile) => {
       const fbProfile: IFirebaseUser = {
         ...profile, firebaseUID: user.uid,
+        cashAppName: null,
         venmoName: null
       };
       console.log("getProfile SUCCESS");

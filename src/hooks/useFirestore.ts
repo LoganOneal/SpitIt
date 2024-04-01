@@ -75,7 +75,7 @@ export const useFirestore = () => {
       }
   
       const hostReceiptsIds = userDoc.data()?.hostReceipts || [];
-      const requestedReceiptsIds = userDoc.data()?.memberReceipts || [];
+      const requestedReceiptsIds = userDoc.data()?.requestedReceipts || [];
   
       const hostReceipts: IReceipt[] = [];
       const requestedReceipts: IReceipt[] = [];
@@ -267,6 +267,7 @@ export const useFirestore = () => {
           firebaseUID: userDoc.id,
           providerId: "",
           uid: userData.uid,
+          cashAppName: userData.cashAppName || "",
           venmoName: userData.venmoName || "",
         };
       } else {
@@ -364,10 +365,27 @@ export const useFirestore = () => {
         await updateDoc(userRef, {
           venmoName: venmoName,
         });
-        console.log("Venmo Name updated successfully");
+        console.log("Venmo name updated successfully");
       }
     } catch (error) {
       console.error("Error updating venmo name:", error);
+      throw error;
+    }
+  };
+
+  // Function to update venmo account name in firestore
+  const updateCashAppName = async (cashAppName: string) => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          cashAppName: cashAppName,
+        });
+        console.log("Cash App name updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating cash app name:", error);
       throw error;
     }
   };
@@ -382,9 +400,10 @@ export const useFirestore = () => {
     getUserReceipts,
     getFirestoreUser,
     reauthenticateUser,
+    updateCashAppName,
     updateDisplayName,
     updateEmailAddress,
     updatePhoneNumber,
-    updateVenmoName,
+    updateVenmoName
   };
 };

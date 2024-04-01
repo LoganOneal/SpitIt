@@ -24,6 +24,7 @@ export default function GuestsScreen({ route, navigation }) {
   );
 
   useEffect(() => {
+    console.log(authState)
     try {
       const receiptsColRef = collection(db, 'receipts');
       const receiptDocRef = doc(receiptsColRef, receiptId);

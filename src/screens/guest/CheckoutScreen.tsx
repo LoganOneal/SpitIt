@@ -11,6 +11,7 @@ import { useAppSelector } from "../../store/hook";
 import { selectAuthState } from "../../store/authSlice";
 import { IPaymentMethod } from '../../constants/types';
 import { useData } from '../../hooks/useData';
+import { getFirestore } from 'firebase/firestore';
 
 
 const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }): React.ReactElement => {
@@ -21,7 +22,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
   const [receipt, setReceipt] = useState<IReceipt | undefined>(undefined);
   const authState = useAppSelector(selectAuthState);
 
-  const { getReceiptById, updateItemsPaidStatus } = useFirestore();
+  const { getReceiptById, updateItemsPaidStatus, getFirestoreUser } = useFirestore();
 
   const handleOpenExternalLink = async (link: string) => {
     const supported = await Linking.canOpenURL(link);
@@ -32,9 +33,22 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
     }
   };
   const handleCheckout = async () => {
-    if (paymentMethod == "venmo") {
-      console.log("checkout with vddeffffnmo");
-      Linking.openURL('venmo://incomplete/requests?recipients=loganofneal&amount=1&note=TESfTTT')
+    const receipt = await getReceiptById(receiptId);
+    if (receipt.host) {
+      const host = await getFirestoreUser(receipt.host.toString())
+
+      if (paymentMethod == "venmo") {
+        console.log("checkout with vddeffffnmo");
+        Linking.openURL('venmo://incomplete/requests?recipients=loganofneal&amount=1&note=TESfTTT')
+      }
+      else if (paymentMethod == "cash app") {
+        console.log("checkout with cash app")
+        const payment = total + total * .11
+        Linking.openURL('https://cash.app/$' + host?.cashAppName + '/' + payment)
+      }
+    }
+    else {
+      console.log("Error: Could not obtain host's payment information")
     }
   };
 
@@ -69,8 +83,9 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
               appearance='outline'
               status='info'
               size='giant'
+              onPress={() => setPaymentMethod("cash app")}
             >
-              Cashapp
+              Cash App
             </Button>
             <Button
               style={styles.button}
