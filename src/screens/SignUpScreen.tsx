@@ -82,7 +82,7 @@ export default function SignUpScreen({ navigation }) {
   ) => {
     let parsedResponse = null;
     let firebaseToken = null;
-    const fullName = fname + lname;
+    const fullName = fname + " " + lname;
     setLoading(true);
 
     await signupUser(fullName, email, password).then((fbResponse) => {
