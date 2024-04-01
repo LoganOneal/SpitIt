@@ -13,6 +13,7 @@ export interface IFirebaseUser extends UserInfo {
   firebaseUID: string | null;
   cashAppName: string | null;
   venmoName: string | null;
+  paypalEmail: string | null;  //should be the email address associated with the account
 }
 
 // Omit properties we don't use
