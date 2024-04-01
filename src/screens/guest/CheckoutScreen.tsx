@@ -46,6 +46,11 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         const payment = total + total * .11
         Linking.openURL('https://cash.app/$' + host?.cashAppName + '/' + payment)
       }
+      else if (paymentMethod == "paypal") {
+        console.log("checkout with paypal")
+        const payment = total + total * .11
+        Linking.openURL('https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=' + host?.paypalEmail + '&amount=' + payment + '&currency_code=USD')  
+      }
     }
     else {
       console.log("Error: Could not obtain host's payment information")
@@ -86,6 +91,15 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
               onPress={() => setPaymentMethod("cash app")}
             >
               Cash App
+            </Button>
+            <Button
+              style={styles.button}
+              appearance='outline'
+              status='info'
+              size='giant'
+              onPress={() => setPaymentMethod("paypal")}
+            >
+              PayPal
             </Button>
             <Button
               style={styles.button}
