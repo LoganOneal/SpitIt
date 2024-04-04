@@ -58,11 +58,6 @@
   - I work full time and I don't have time to provide detailed support.
 - I will try and keep this template updated, as and when I can, when major versions of the dependencies are changed.
 
-## Issues
-
-- React Navigation theme is not being passed into AppNavigator.ts file.
-  - [I have posted the issue on StackOverflow](https://stackoverflow.com/questions/77497977/react-navigation-v6-typescript-how-to-pass-theme-prop-to-navigation-container)
-
 ## How to get started
 - **Replace** the `cashAppName`, `venmoName` and `paypalEmail` used in `src/hooks/useAuth.ts`
 - **Create** an `.env` file in root with the following filled:
