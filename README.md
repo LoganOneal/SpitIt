@@ -78,9 +78,9 @@ const auth = initializeAuth(app, {
 
 ## How to get started
 
-- **Replace** the **FirebaseConfig** settings used in **useAuth.ts**
+- **Replace** the `FirebaseConfig` settings used in `src/hooks/useAuth.ts`
   - **You MUST make this change, else the app will not work**
-- NPM Install
-- NPM run start
+- `npm install`
+- `npm run start`
   - Then choose a for Android
   - Scan the QR code with EXPO Go or with camera app on IOS
