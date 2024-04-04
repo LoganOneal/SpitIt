@@ -64,8 +64,7 @@
   - [I have posted the issue on StackOverflow](https://stackoverflow.com/questions/77497977/react-navigation-v6-typescript-how-to-pass-theme-prop-to-navigation-container)
 
 ## How to get started
-
-- **Replace** the `FirebaseConfig` settings used in `src/hooks/useAuth.ts`
+- **Replace** the `cashAppName`, `venmoName` and `paypalEmail` used in `src/hooks/useAuth.ts`
 - **Create** an `.env` file in root with the following filled:
 ```env
 API_KEY=

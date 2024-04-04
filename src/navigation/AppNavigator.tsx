@@ -7,11 +7,11 @@ import { selectAuthState } from "../store/authSlice";
 import * as Linking from 'expo-linking';
 import DrawerNavigator from "./DrawerNavigator";
 
-/* Deep Linking Configuration
-  - Can specify which screens to navigate to based on the deep link URL
-    - So, if "NewPassword" is included in the URL (can be changed in firebase email template), then navigate to the ResetPassword screen
-*/
-const AppNavigator = (theme: Theme) => {
+interface AppNavigatorProps {
+  theme: Theme;
+}
+
+const AppNavigator: React.FC<AppNavigatorProps> = ({ theme }) => {
   const authState = useAppSelector(selectAuthState);
 
   const linking = {
@@ -23,10 +23,8 @@ const AppNavigator = (theme: Theme) => {
     }
   };
   
-  {/* Conditional stack navigator rendering based on login state */}
   return (
-    // TODO - Pass theme prop into NavigationContainer
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={linking} theme={theme}>
       {authState?.isLoggedIn ? <DrawerNavigator /> : <PublicStack />}
     </NavigationContainer>
   );
