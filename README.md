@@ -62,24 +62,22 @@
 
 - React Navigation theme is not being passed into AppNavigator.ts file.
   - [I have posted the issue on StackOverflow](https://stackoverflow.com/questions/77497977/react-navigation-v6-typescript-how-to-pass-theme-prop-to-navigation-container)
-- Firebase AsyncStorage warning
-  - The message, shown below, gets thrown in the console, but the authentication and state are working.
-  - >  WARN  [2023-10-31]  @firebase/auth: Auth (10.5.2):
-You are initializing Firebase Auth for React Native without providing
-AsyncStorage. Auth state will default to memory persistence and will not
-persist between sessions. In order to persist auth state, install the package
-"@react-native-async-storage/async-storage" and provide it to
-initializeAuth:
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
 
 ## How to get started
 
 - **Replace** the `FirebaseConfig` settings used in `src/hooks/useAuth.ts`
-  - **You MUST make this change, else the app will not work**
+- **Create** an `.env` file in root with the following filled:
+```env
+API_KEY=
+AUTH_DOMAIN=
+PROJECT_ID=
+STORAGE_BUCKET=
+MESSAGING_SENDER_ID=
+APP_ID=
+```
+- **You MUST make these changes, else the app will not work**
+
+Then, naviage to your terminal:
 - `npm install`
 - `npm run start`
   - Then choose a for Android
