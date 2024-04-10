@@ -88,7 +88,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
     }
 
     const handleGuestCheckout = async () => {
-        navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal, host: host });
+        navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal, host: host });        
     }
 
     const handleCheckout = async () => {
@@ -152,6 +152,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
                         <Button
                             style={styles.button}
                             onPress={handleCheckout}
+                            disabled={selectedItems.length === 0 && (receipt && receipt.host !== auth.currentUser?.uid)}
                         >
                             Checkout
                         </Button>
