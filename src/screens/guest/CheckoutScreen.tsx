@@ -1,61 +1,70 @@
-import React, { useEffect, useState } from 'react';
-import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Text } from '@ui-kitten/components';
-import { useFirestore } from '../../hooks/useFirestore';
 import { Linking } from 'react-native';
 import { Button, Icon, IconElement, Layout, Card } from '@ui-kitten/components';
-import { useAppDispatch } from "../../store/hook";
-import { IReceipt } from '../../interfaces/IReceipt';
-import ItemCard from '../../components/ItemCard';
-import { useAppSelector } from "../../store/hook";
-import { selectAuthState } from "../../store/authSlice";
-import { IPaymentMethod } from '../../constants/types';
-import { useData } from '../../hooks/useData';
-import { getFirestore } from 'firebase/firestore';
+import PaymentButton from '../../components/PaymentButton';
 
 
 const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }): React.ReactElement => {
-  const { receiptId, total } = route.params;
-
+  const { receiptId, total, host } = route.params;
   const [paymentMethod, setPaymentMethod] = useState<string>("");
 
-  const [receipt, setReceipt] = useState<IReceipt | undefined>(undefined);
-  const authState = useAppSelector(selectAuthState);
+  // const { getReceiptById, updateItemsPaidStatus, getFirestoreUser } = useFirestore();
 
-  const { getReceiptById, updateItemsPaidStatus, getFirestoreUser } = useFirestore();
+  // const handleOpenExternalLink = async (link: string) => {
+  //   const supported = await Linking.canOpenURL(link);
+  //   if (supported) {
+  //     await Linking.openURL(link);
+  //   } else {
+  //     console.log("Don't know how to open URI: " + link);
+  //   }
+  // };
 
-  const handleOpenExternalLink = async (link: string) => {
-    const supported = await Linking.canOpenURL(link);
-    if (supported) {
-      await Linking.openURL(link);
-    } else {
-      console.log("Don't know how to open URI: " + link);
-    }
-  };
   const handleCheckout = async () => {
-    const receipt = await getReceiptById(receiptId);
-    if (receipt.host) {
-      const host = await getFirestoreUser(receipt.host.toString())
-
-      if (paymentMethod == "venmo") {
-        console.log("checkout with vddeffffnmo");
-        Linking.openURL('venmo://incomplete/requests?recipients=loganofneal&amount=1&note=TESfTTT')
+    if (host) {  
+      if (paymentMethod == "Venmo") {
+        console.log("checkout with venmo");
+        const payment = total + total * .11
+        // Linking.openURL('venmo://incomplete/requests?recipients=loganofneal&amount=1&note=TESfTTT')
+        Linking.openURL('venmo://paycharge?txn=pay&recipients=' + host?.paymentMethods.Venmo + '&amount=' + payment + '&note=SplitIt! -- Payment for receipt ' + receiptId)
       }
-      else if (paymentMethod == "cash app") {
+      else if (paymentMethod == "CashApp") {
         console.log("checkout with cash app")
         const payment = total + total * .11
-        Linking.openURL('https://cash.app/$' + host?.cashAppName + '/' + payment)
+        Linking.openURL('https://cash.app/$' + host?.paymentMethods.CashApp + '/' + payment)
       }
-      else if (paymentMethod == "paypal") {
+      else if (paymentMethod == "PayPal") {
         console.log("checkout with paypal")
         const payment = total + total * .11
-        Linking.openURL('https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=' + host?.paypalEmail + '&amount=' + payment + '&currency_code=USD')  
+        Linking.openURL('https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=' + host?.paymentMethods.PayPal + '&amount=' + payment + '&currency_code=USD')  
       }
     }
     else {
       console.log("Error: Could not obtain host's payment information")
     }
   };
+
+  const displayPaymentMethods = () => {
+    const hostMethods = host?.paymentMethods;
+    if (host) {
+    // Filter out the payment methods that are not available
+    const availableMethods = Object.keys(hostMethods).filter((method) => {
+      return hostMethods[method] !== null && hostMethods[method] !== "";
+    });
+
+    return availableMethods.map((method, index) => {
+      return (
+        <PaymentButton
+          key={index}
+          paymentMethod={method}
+          onPress={() => setPaymentMethod(method)}
+          isSelected={paymentMethod === method}
+        />
+      );
+    });
+  }
+  }
 
   return (
     <View style={styles.container}>
@@ -74,41 +83,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
           style={styles.card}
         >
           <View style={styles.header}>
-            <Button
-              style={[styles.button, paymentMethod == "venmo" && styles.selectedButton]}
-              appearance='outline'
-              status='info'
-              size='giant'
-              onPress={() => setPaymentMethod("venmo")}
-            >
-              Venmo
-            </Button>
-            <Button
-              style={[styles.button, paymentMethod == "cash app" && styles.selectedButton]}
-              appearance='outline'
-              status='info'
-              size='giant'
-              onPress={() => setPaymentMethod("cash app")}
-            >
-              Cash App
-            </Button>
-            <Button
-              style={[styles.button, paymentMethod == "paypal" && styles.selectedButton]}
-              appearance='outline'
-              status='info'
-              size='giant'
-              onPress={() => setPaymentMethod("paypal")}
-            >
-              PayPal
-            </Button>
-            <Button
-              style={[styles.button, paymentMethod == "plaid" && styles.selectedButton]}
-              appearance='outline'
-              status='info'
-              size='giant'
-            >
-              Plaid
-            </Button>
+            {displayPaymentMethods()}
           </View>
         </View>
 
