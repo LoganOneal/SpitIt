@@ -65,25 +65,28 @@ export const useAuth = () => {
     console.log("BEGIN SignUp");
     const fbResponse = initResponse();
     await createUserWithEmailAndPassword(auth, userEmail, userPassword)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         fbResponse.result = userCredential;
 
         // create user in firestore
         const userRef = doc(db, "users", userCredential.user.uid);
-        const userDoc = getDoc(userRef);
-        setDoc(userRef, {
+        await setDoc(userRef, {
           name: userFullName,
           email: userEmail,
           created: serverTimestamp(),
           hostReceipts: [],
           memberReceipts: [],
           hasAccount: true,
-          phoneNumber: ""
+          phoneNumber: "",
+          paymentMethods: {
+            Venmo: null,
+            CashApp: null,
+            PayPal: null,
+          },
         })
-
         // Update profile
         if (auth.currentUser) {
-          updateProfile(auth.currentUser, {
+          await updateProfile(auth.currentUser, {
             displayName: userFullName,
           });
         }
