@@ -179,9 +179,11 @@ export const useAuth = () => {
     user?.providerData.forEach((profile) => {
       const fbProfile: IFirebaseUser = {
         ...profile, firebaseUID: user.uid,
-        cashAppName: null,
-        venmoName: null,
-        paypalEmail: null,
+        paymentMethods: {
+          Venmo: null,
+          CashApp: null,
+          PayPal: null,
+        },
       };
       console.log("getProfile SUCCESS");
       return fbProfile;
