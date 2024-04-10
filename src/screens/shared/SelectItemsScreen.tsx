@@ -12,6 +12,7 @@ import { useAppSelector } from "../../store/hook";
 import { selectAuthState } from "../../store/authSlice";
 import {auth} from "../../services/firebase";
 import { set } from 'react-hook-form';
+import { IFirebaseUser } from '../../interfaces/IAuthentication';
 
 const PlusIcon = (props): IconElement => (
     <Icon
@@ -23,17 +24,22 @@ const PlusIcon = (props): IconElement => (
 const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }): React.ReactElement => {
     const { receiptId } = route.params;
     const authState = useAppSelector(selectAuthState);
-    const { getReceiptById, updateItemsPaidStatus } = useFirestore();
+    const { getReceiptById, updateItemsPaidStatus, getFirestoreUser } = useFirestore();
     const [items, setItems] = useState<IReceiptItem[] | undefined>([]);
     const [receipt, setReceipt] = useState<IReceipt | undefined>(undefined);
     const [selectedItems, setSelectedItems] = useState<IReceiptItem[]>([]);
     const [individualTotal, setIndividualTotal] = useState<number>(0);
+    const [host, setHost] = useState<IFirebaseUser | null>(null);
 
     useEffect(() => {
         const fetchReceipts = async () => {
             try {
                 const receipt = await getReceiptById(receiptId);
                 setReceipt(receipt);
+                if (receipt && receipt?.host) {
+                    const host = await getFirestoreUser(receipt.host.toString())
+                    setHost(host);
+                }
             } catch (error) {
                 console.error('Error setting receipt items:', error);
             }
@@ -82,7 +88,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
     }
 
     const handleGuestCheckout = async () => {
-        navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal });
+        navigation.navigate('GuestCheckout', { receiptId: receiptId, total: individualTotal, host: host });
     }
 
     const handleCheckout = async () => {
