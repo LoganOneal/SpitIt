@@ -196,6 +196,70 @@ export const useFirestore = () => {
       throw error;
     }
   };
+  const RemoveItem = async (receiptId: string, itemName: string, itemPrice: number) => {
+    try {
+        const receiptRef = doc(db, 'receipts', receiptId);
+        const receiptSnapshot = await getDoc(receiptRef);
+
+        if (receiptSnapshot.exists()) {
+          console.log('Receipt found');
+            const receiptData = receiptSnapshot.data() as IReceipt;
+
+            const updatedItems = receiptData.items?.filter(item => item.name !== itemName) || [];
+            const newSubTotal = ((receiptData.subtotal || 0) - itemPrice).toFixed(2);
+            const newTax = (receiptData.tax || 0) - parseFloat((itemPrice * 0.07).toFixed(2));
+            const newTotal = (receiptData.total || 0) - parseFloat((itemPrice * 1.07).toFixed(2));
+            console.log(newSubTotal, newTax, newTotal);
+            await updateDoc(receiptRef, {
+                items: updatedItems,
+                subtotal: newSubTotal,
+                tax: newTax,
+                total: newTotal,
+            });
+            console.log('Item removed successfully');
+        } else {
+            console.error('Receipt not found');
+        }
+    } catch (error) {
+        console.error('Error removing item:', error);
+        throw error;
+    }
+};
+
+  const addNewItemToReceipt = async (receiptId: string, itemName: string, itemPrice: number, itemId: number ) => {
+    try {
+        const receiptRef = doc(db, 'receipts', receiptId);
+        const receiptSnapshot = await getDoc(receiptRef);
+        if (receiptSnapshot.exists()) {
+          console.log('Receipt found');
+          const receiptData = receiptSnapshot.data() as IReceipt;
+          const newItem = {
+              id: itemId, 
+              name: itemName,
+              price: itemPrice,
+              paid: false, 
+              purchasers: [],
+          };
+          const newSubTotal = ((receiptData.subtotal || 0) + itemPrice).toFixed(2);
+          const newTax = ((receiptData.tax || 0) +  (itemPrice * 0.07)).toFixed(2);
+          const newTotal = ((receiptData.total || 0) + (itemPrice * 1.07)).toFixed(2);
+          console.log(newSubTotal, newTax, newTotal);
+          await updateDoc(receiptRef, {
+              items: arrayUnion(newItem),
+              subtotal: newSubTotal,
+              tax: newTax,
+              total: newTotal,
+          });
+        } else {
+          console.error('Receipt not found');
+        }
+        console.log("Item added successfully to receipt.");
+    } catch (error) {
+        console.error("Error adding new item to receipt:", error);
+        throw error;
+    }
+};
+
   const updateItemsPaidStatus = async (receiptId: string, itemIds: number[], isPaid: boolean) => {
     const userUid = auth.currentUser?.uid;
 
@@ -407,6 +471,8 @@ export const useFirestore = () => {
     }
   }
 
+
+
   return {
     createReceipt,
     addNewUserToReceipt,
@@ -422,6 +488,8 @@ export const useFirestore = () => {
     updatePhoneNumber,
     updateVenmoName,
     updateCashAppName,
-    updatePaypalEmail
+    updatePaypalEmail,
+    RemoveItem,
+    addNewItemToReceipt
   };
 };

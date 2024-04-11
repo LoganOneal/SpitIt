@@ -117,6 +117,7 @@ const Scanner = ({navigation}:any) => {
           );
         }
       } catch (error) {
+        setIsLoading(false);
         console.error("Error during document analysis:", error);
       }
     }
