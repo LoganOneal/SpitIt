@@ -267,9 +267,11 @@ export const useFirestore = () => {
           firebaseUID: userDoc.id,
           providerId: "",
           uid: userData.uid,
-          cashAppName: userData.cashAppName || "",
-          venmoName: userData.venmoName || "",
-          paypalEmail: userData.paypalEmail || "",
+          paymentMethods: {
+            Venmo: userData.paymentMethods?.Venmo || null,
+            CashApp: userData.paymentMethods?.CashApp || null,
+            PayPal: userData.paymentMethods?.PayPal || null,
+          },
         };
       } else {
         console.log("Firestore User Document does not exist");
@@ -281,7 +283,7 @@ export const useFirestore = () => {
     }
   };
 
-  //TODO: Add function to reauthenticate, similar to the password shit
+  // Reauthenticate user before updating password if signed in for a long time.
   const reauthenticateUser = async (password: string) => {
     const user = auth.currentUser
     try {
@@ -363,8 +365,15 @@ export const useFirestore = () => {
       const user = auth.currentUser;
       if (user) {
         const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+
+        const paymentMethods = {
+          ...userDoc.data()?.paymentMethods,
+          Venmo: venmoName,
+        };
+
         await updateDoc(userRef, {
-          venmoName: venmoName,
+          paymentMethods: paymentMethods,
         });
         console.log("Venmo name updated successfully");
       }
@@ -380,8 +389,15 @@ export const useFirestore = () => {
       const user = auth.currentUser;
       if (user) {
         const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        const paymentMethods = {
+          ...userDoc.data()?.paymentMethods,
+          CashApp: cashAppName,
+        };
+
         await updateDoc(userRef, {
-          cashAppName: cashAppName,
+          paymentMethods: paymentMethods,
         });
         console.log("Cash App name updated successfully");
       }
@@ -396,8 +412,15 @@ export const useFirestore = () => {
       const user = auth.currentUser;
       if (user) {
         const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        const paymentMethods = {
+          ...userDoc.data()?.paymentMethods,
+          PayPal: paypalEmail,
+        };
+
         await updateDoc(userRef, {
-          paypalEmail: paypalEmail,
+          paymentMethods: paymentMethods,
         });
         console.log("Paypal email updated successfully");
       }

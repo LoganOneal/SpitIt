@@ -11,9 +11,11 @@ export interface IFirebaseResponse {
 // extend the firebase user object
 export interface IFirebaseUser extends UserInfo {
   firebaseUID: string | null;
-  cashAppName: string | null;
-  venmoName: string | null;
-  paypalEmail: string | null;  //should be the email address associated with the account
+  paymentMethods: {
+    Venmo: string | null;
+    CashApp: string | null;
+    PayPal: string | null;
+  };
 }
 
 // Omit properties we don't use
