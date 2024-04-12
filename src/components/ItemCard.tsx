@@ -1,19 +1,23 @@
 import * as React from 'react';
 import { isRejected } from '@reduxjs/toolkit';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { Button, Card, CheckBox, CheckBoxProps, Text } from '@ui-kitten/components';
-import { StyleSheet, View, ViewProps } from 'react-native';
+import { Button, Card, CheckBox, CheckBoxProps, Text, Icon } from '@ui-kitten/components';
+import { StyleSheet, View, ViewProps, TouchableOpacity } from 'react-native';
 import { IReceiptItem } from "../interfaces/IReceipt";
 import { useFirestore } from '../hooks/useFirestore';
 
 
-
+const MinusIcon = (props) => (
+  <Icon {...props} name="minus-outline" width={16} height={16} />
+);
 const ReceiptCard = ({
   handleSelectItem,
   receiptItem,
+  onRemoveItem,
 }: {
   handleSelectItem: (item: IReceiptItem) => void;
   receiptItem: IReceiptItem;
+  onRemoveItem: (item: IReceiptItem) => void;
 }) => {
   const [memberNames, setMemberNames] = React.useState<string[]>([]);
   const useCheckboxState = (initialCheck = false): CheckBoxProps => {
@@ -42,28 +46,39 @@ const ReceiptCard = ({
   }, [receiptItem.purchasers]);
 
   return (
-    <Card style={styles.card}>
-      <View style={styles.row}>
-        <Text category='s2'>
-          {receiptItem.name || 'N/A'}
-        </Text>
-        <Text>
-          ${receiptItem.price ? receiptItem.price.toFixed(2) : 'N/A'}
-        </Text>
-        <CheckBox
-          {...paidCheckboxState}
-          disabled={receiptItem.paid}
-        />
-      </View>
-      <View style={styles.membersContainer}>
-        <Text>Members: </Text>
-        {memberNames.map((name, index) => (
-          <View key={index} style={styles.memberTag}>
-            <Text category='c1'>{name}</Text>
+    <>
+      <Card style={styles.card}>
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.minusButton}
+            onPress={() => onRemoveItem(receiptItem)}
+          >
+            <MinusIcon fill="#fff" />
+          </TouchableOpacity>
+          <View style={styles.itemDetails}>
+            <Text category='s2' style={styles.itemText}>
+              {receiptItem.name}
+            </Text>
+            <Text>
+              ${receiptItem.price}
+            </Text>
           </View>
-        ))}
-      </View>
-    </Card>
+          <CheckBox style={styles.checkbox}
+            {...paidCheckboxState}
+            disabled={receiptItem.paid}
+          >
+          </CheckBox>
+          <View style={styles.membersContainer}>
+            <Text>Members: </Text>
+            {memberNames.map((name, index) => (
+              <View key={index} style={styles.memberTag}>
+                <Text category='c1'>{name}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </Card>
+    </>
   )
 }
 
@@ -75,7 +90,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-
   info: {
     marginTop: 10,
   },
@@ -91,17 +105,27 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 4, height: 2 },
     shadowRadius: 6,
   },
-  membersContainer: {
-    flexDirection: 'row',
-    marginTop: 4,
-    flexWrap: 'wrap', // This allows member tags to wrap onto the next line if space runs out
+  minusButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 30,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 5,
   },
-  memberTag: {
-    backgroundColor: '#E8E8E8',
-    marginRight: 4,
-    marginBottom: 4,
-    padding: 4,
-    borderRadius: 4,
+  itemDetails: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingRight: 8,
+  },
+  itemText: {
+    flexShrink: 1,
+    marginRight: 10,
+  },
+  checkbox: {
+    marginLeft: 8,
   },
 
 });
