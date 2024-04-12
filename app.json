@@ -26,7 +26,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }, 
+    },
     "permissions": ["ACCESS_NETWORK_STATE", "CAMERA", "INTERNET", "MANAGE_DOCUMENTS", "READ_EXTERNAL_STORAGE", "READ_PHONE_STATE", "WRITE_EXTERNAL_STORAGE"]
   }
 }

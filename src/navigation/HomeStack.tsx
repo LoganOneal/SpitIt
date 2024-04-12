@@ -36,7 +36,7 @@ export default function HomeStack() {
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="EditProfilePassword" component={EditProfilePasswordScreen} />
         <Stack.Screen name="EditPaymentSettings" component={EditPaymentSettingsScreen} />
-        <Stack.Screen name="Upload Receipt" component={Scanner} />
+        <Stack.Screen name="Upload Receipt" component={ScanReceipt} />
         <Stack.Screen name="GuestCheckout" component={CheckoutScreen} />
         <Stack.Screen name="Create Receipt" component={CreateReceipt} />
         <Stack.Screen name="Join Receipt" component={JoinReceiptScreen} />

@@ -164,7 +164,6 @@ const Scanner = ({navigation}:any) => {
       MediaLibrary.saveToLibraryAsync(photo.uri);
     }
   };
-
   return (
     <SafeAreaView style={styles.container}>
       {photo ? (
@@ -315,6 +314,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
     marginTop: 10,
+  },
+  camera: {
+    flex: 1,
   }
 });
 
