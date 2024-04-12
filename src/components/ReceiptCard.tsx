@@ -53,7 +53,7 @@ const ReceiptCard = ({
       header={<Header vendor={vendor} host={host} location={location} />}
     >
       <Text>
-        Members: {members?.map(member => member.name).join(', ')}
+        Members: {members && members.length > 0 ? members.join(', ') : 'No guests'}
       </Text>
       <Text style={styles.info}>
         Received: ${received} Total: ${total}

@@ -29,7 +29,7 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
     const [receipt, setReceipt] = useState<IReceipt | undefined>(undefined);
     const [selectedItems, setSelectedItems] = useState<IReceiptItem[]>([]);
     const [individualTotal, setIndividualTotal] = useState<number>(0);
-    const [host, setHost] = useState<IFirebaseUser | null>(null);
+    const [memberNames, setMemberNames] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const fetchReceipts = async () => {
@@ -47,6 +47,9 @@ const MyReceiptsScreen = ({ route, navigation }: { route: any, navigation: any }
         fetchReceipts();
     }, []);
 
+  
+      
+      
     // update total price on item select change 
     useEffect(() => {
         const total = selectedItems.reduce((acc, item) => acc + (item.price ?? 0), 0);

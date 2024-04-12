@@ -12,7 +12,7 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 
 const MyReceiptsScreen = ({navigation}): React.ReactElement => {
 
-  const { getUserReceipts } = useFirestore();
+  const { getUserReceipts, getFirestoreUser} = useFirestore();
   const [hostReceipts, setHostReceipts] = useState<IReceipt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -27,8 +27,29 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
     const fetchReceipts = async () => {
       try {
         setIsLoading(true);
-        const { hostReceipts, requestedReceipts } = await getUserReceipts();
-        setHostReceipts(hostReceipts);
+        const { hostReceipts } = await getUserReceipts();
+        console.log("hostReceipts", hostReceipts);
+        const receiptsWithAdditionalData = await Promise.all(hostReceipts.map(async (receipt) => {
+          // Fetch host name
+          const hostData = await getFirestoreUser(receipt.host?.toString() || '');
+          const hostName = hostData ? hostData.displayName : "Unknown Host";
+          // Fetch member names
+          const memberNames = await Promise.all((receipt.guests ?? []).map(async (memberId: string) => {
+          const memberData = await getFirestoreUser(memberId);
+          return memberData ? memberData.displayName : "Unknown Member";
+          }));
+  
+          return {
+            ...receipt,
+            hostName,
+            memberNames 
+          };
+        }));
+        setHostReceipts(receiptsWithAdditionalData.map(receipt => ({
+          ...receipt,
+          hostName: receipt.hostName || undefined,
+          memberNames: receipt.memberNames.filter(name => name !== null) as string[]
+        })));
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching host receipts:', error);
@@ -52,7 +73,7 @@ const MyReceiptsScreen = ({navigation}): React.ReactElement => {
           contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 45 }}
           renderItem={({ item }) => (
             <TouchableWithoutFeedback onPress={() => handleReceiptCardPressHost(item)}>
-              <ReceiptCard {...item} />
+              <ReceiptCard {...item} members={item.memberNames} host={item.hostName}/>
             </TouchableWithoutFeedback>
           )}
         />
