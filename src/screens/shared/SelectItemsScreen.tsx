@@ -58,7 +58,7 @@ const MyReceiptsScreen = ({
                 setReceipt(receipt);
                 if (receipt && receipt?.host) {
                     const host = await getFirestoreUser(receipt.host.toString())
-                    setHost(host);
+                    // setHost(host);
                 }
                 setItems(receipt?.items ?? []);
             } catch (error) {
