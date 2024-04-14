@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, BottomNavigationTab, Icon, IconElement } from '@ui-kitten/components';
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useIsFocused } from '@react-navigation/native';
 
 import MyReceiptsScreen from "../screens/shared/MyReceiptsScreen";
 import RequestedReceiptsScreen from "../screens/shared/RequestedReceiptsScreen";
@@ -10,11 +11,19 @@ import Scanner from "../screens/shared/Scanner";
 import CreateReceipt from "../screens/host/CreateReceipt";
 import JoinReceiptScreen from "../screens/guest/JoinReceiptScreen";
 
-
 const TabNavigator = () => {
   const navigation = useNavigation()
   const { Navigator, Screen } = createBottomTabNavigator();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const isFocused = useIsFocused();
+
+  React.useEffect((state) => {
+    console.log(isFocused);
+    if (isFocused) {
+      setSelectedIndex(0);
+      navigation.navigate("My Receipts");
+    }
+  }, [isFocused]);
 
   const ReceiptIcon = (props): IconElement => (
     <Icon
@@ -57,8 +66,8 @@ const TabNavigator = () => {
       style={styles.bottomNav}
       selectedIndex={selectedIndex}
       onSelect={(index) => {
-        setSelectedIndex(index)
-        navigation.navigate(state.routeNames[index])
+        setSelectedIndex(index);
+        navigation.navigate(state.routeNames[index]);
       }}
     >
       <BottomNavigationTab 
