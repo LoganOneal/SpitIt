@@ -70,7 +70,7 @@ const JoinReceiptScreen = ({ navigation }): React.ReactElement => {
         </Button>
         <Button
           style={styles.qrButton}
-          onPress={() => navigation.navigate('JoinReceipt')}
+          onPress={() => navigation.navigate('Join Receipt')}
           accessoryLeft={CameraIcon}
         >
           SCAN QR CODE
