@@ -56,12 +56,7 @@ export default function SignUpScreen({ navigation }) {
   } = useForm<SignUpFormData>();
 
   const onSubmit = (data: SignUpFormData) => {
-    handleSignUp(
-      data.firstName,
-      data.lastName,
-      data.emailAddress,
-      data.password
-    );
+    navigation.navigate("PaymentRegistration", {data: data})
   };
 
   const onDismissSnackBar = () => setShowSnack(false);
@@ -73,57 +68,6 @@ export default function SignUpScreen({ navigation }) {
 
   const dynamicContainerHeightMultiplier = isPasswordValid ? 0.7 : 0.85;
   const dynamicContainerHeight = height * dynamicContainerHeightMultiplier;
-
-  const handleSignUp = async (
-    fname: string,
-    lname: string,
-    email: string,
-    password: string
-  ) => {
-    let parsedResponse = null;
-    let firebaseToken = null;
-    const fullName = fname + " " + lname;
-    setLoading(true);
-
-    await signupUser(fullName, email, password).then((fbResponse) => {
-      parsedResponse = JSON.parse(fbResponse);
-
-      // error response
-      if (parsedResponse.error.code) {
-        if (parsedResponse.error.code === "auth/email-already-in-use") {
-          setEmailRegistered(true);
-        }
-        setSnackMessage(parsedResponse.error.message);
-        setShowSnack(true);
-        setLoading(false);
-        return;
-      }
-
-      // response
-      if (parsedResponse.result) {
-        firebaseToken = parsedResponse.result.user.stsTokenManager.accessToken;
-        const firebaseUserName = parsedResponse.result.user.displayName;
-        if (firebaseToken != null) {
-          // Get firebase profile
-          const profile = getProfile();
-          const user: IAuthState = {
-            firebaseUID: profile?.firebaseUID,
-            userName: profile?.displayName ?? firebaseUserName,
-            userToken: firebaseToken,
-            userEmail: profile?.email ?? email,
-            sessionTimedOut: false,
-            isLoading: false,
-            isLoggedIn: true,
-            darkMode: false,
-          };
-          // Redux action
-          dispatch(userRegistered(user));
-          setLoading(false);
-          // React navigation will handle Redirect to home, if login worked
-        }
-      }
-    });
-  };
 
   return (
     <View
@@ -368,7 +312,7 @@ export default function SignUpScreen({ navigation }) {
               Sign Up
             </Button>
             <Button
-              appearance="ghost"
+              appearance="outline"
               onPress={() => navigation.navigate("SignIn")}
               style={styles.button}
             >
