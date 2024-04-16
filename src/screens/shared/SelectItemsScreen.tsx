@@ -43,6 +43,7 @@ const MyReceiptsScreen = ({
     const [selectedItems, setSelectedItems] = useState<IReceiptItem[]>([]);
     const [individualTotal, setIndividualTotal] = useState<number>(0);
     const [memberNames, setMemberNames] = useState<Record<string, string>>({});
+    const [host, setHost] = useState<IFirebaseUser | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const { control, handleSubmit, reset } = useForm({
         defaultValues: {
@@ -58,7 +59,7 @@ const MyReceiptsScreen = ({
                 setReceipt(receipt);
                 if (receipt && receipt?.host) {
                     const host = await getFirestoreUser(receipt.host.toString())
-                    // setHost(host);
+                    setHost(host);
                 }
                 setItems(receipt?.items ?? []);
             } catch (error) {
