@@ -7,6 +7,7 @@ import ThemeToggle from "./ThemeToggle";
 import ResetPasswordScreen from "../screens/ResetPasswordScreen";
 import { selectAuthState } from "../store/authSlice";
 import { useAppSelector } from "../store/hook";
+import PaymentRegistrationScreen from "../screens/PaymentRegistrationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ export default function PublicStack() {
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+      <Stack.Screen name="PaymentRegistration" component={PaymentRegistrationScreen} />
     </Stack.Navigator>
   );
 }

@@ -60,7 +60,10 @@ export const useAuth = () => {
   const signupUser = async (
     userFullName: string,
     userEmail: string,
-    userPassword: string
+    userPassword: string,
+    venmo: string,
+    cashApp: string,
+    payPal: string
   ) => {
     console.log("BEGIN SignUp");
     const fbResponse = initResponse();
@@ -79,9 +82,9 @@ export const useAuth = () => {
           hasAccount: true,
           phoneNumber: "",
           paymentMethods: {
-            Venmo: null,
-            CashApp: null,
-            PayPal: null,
+            Venmo: venmo ? venmo : null,
+            CashApp: cashApp ? cashApp : null,
+            PayPal: payPal ? payPal: null,
           },
         })
         // Update profile
