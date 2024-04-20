@@ -25,11 +25,15 @@ const JoinReceiptScreen = ({ navigation }): React.ReactElement => {
 
   const handleInputChange = (nextValue: string) => {
     const formattedValue = nextValue
+      .replaceAll("-", "")
       .toUpperCase()
-      .replace(/[^A-Z0-9]/g, '')
       .slice(0, 8)
-      .replace(/([A-Z0-9]{4})([A-Z0-9]{0,4})/, '$1-$2');
-    setJoinCode(formattedValue);
+    if (formattedValue.length < 5) {
+      setJoinCode(formattedValue);
+    }
+    else {
+      setJoinCode(`${formattedValue.slice(0,4)}-${formattedValue.slice(4)}`)
+    }
   };
 
   const handleJoinReceipt = async () => {
