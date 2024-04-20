@@ -1,11 +1,28 @@
-import React from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
-import { Button, Card, Icon, IconElement, Text } from '@ui-kitten/components';
+import React, { useEffect, useState } from "react";
+import { Dimensions, StyleSheet, View, ViewProps } from "react-native";
+import { Button, Card, Icon, IconElement, Text , Divider } from '@ui-kitten/components';
 
 import * as AppConstants from "../../constants/constants";
+import { useFirestore } from "../../hooks/useFirestore";
 
 export default function QRCodeScreen({ route, navigation }) {
   const { receiptId } = route.params;
+  const { getReceiptById } = useFirestore();
+  const [joinCode, setJoinCode] = useState("");
+  
+  useEffect(() => {
+    const fetchJoinCode = async () => {
+      try {
+        const receipt = await getReceiptById(receiptId);
+        if (receipt && receipt?.joinCode) {
+          setJoinCode(receipt.joinCode.slice(0, 4) + "-" + receipt.joinCode.slice(4))
+        }
+      } catch (error) {
+        console.error("Error fetching join code:", error);
+      }
+    };
+    fetchJoinCode();
+  }, []);
 
   const PlusIcon = (props): IconElement => (
     <Icon
@@ -14,13 +31,21 @@ export default function QRCodeScreen({ route, navigation }) {
     />
   );
 
+  const Footer = (props: ViewProps) : React.ReactElement => (
+    <View>
+        <Text category="h6" style={styles.joinCode}>
+          Join Code: {joinCode}
+        </Text>
+    </View>
+  );
+
   return (
     <View
       style={styles.container}>
       <Text category='h4'>
         Share Receipt
       </Text>
-      <Card style={styles.card}>
+      <Card style={styles.card} footer={Footer}>
         <Text>*Insert QR Code*</Text>
       </Card>
       <View style={styles.bottomButtons}>
@@ -61,6 +86,10 @@ const styles = StyleSheet.create({
   },
   card: {
     width: qrcode_side_length,
-    height: qrcode_side_length,
+    height: qrcode_side_length + 40,
+  },
+  joinCode: {
+    textAlign: "center",
+    marginVertical: 15
   }
 });
