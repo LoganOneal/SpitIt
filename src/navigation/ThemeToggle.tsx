@@ -1,19 +1,16 @@
-import * as React from "react";
-import { Button, IconButton, Tooltip, useTheme } from "react-native-paper";
+import React, { useContext } from "react";
+import { Button, Icon } from "@ui-kitten/components";
 import { PreferencesContext } from "../context/PreferencesContext";
 
-const ThemeToggle = (): React.ReactNode => {
-  const theme = useTheme();
+const ThemeToggle = () => {
+  const { toggleTheme, isThemeDark } = useContext(PreferencesContext);
+  const renderIcon = (props) => (
+    <Icon {...props} name={isThemeDark ? "sun" : "moon"} /> 
+  );
 
-  const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
   return (
-    <Button
-      icon="theme-light-dark"
-      mode="contained"
-      onPress={toggleTheme}
-      compact
-    >
-      {isThemeDark ? "Light Mode" : "Dark Mode"}
+    <Button onPress={toggleTheme} accessoryLeft={renderIcon}>
+      {isThemeDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
     </Button>
   );
 };
