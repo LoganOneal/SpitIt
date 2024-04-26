@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, Alert, StyleSheet } from "react-native";
-import { Text, Button, TextInput } from "react-native-paper";
+import { Text, Button, Input, Icon } from "@ui-kitten/components";
 import { IFirebaseUser } from "../../interfaces/IAuthentication";
 import { useFirestore } from "../../hooks/useFirestore";
 import { useValidation } from "../../hooks/useValidation";
@@ -21,9 +21,9 @@ const EditProfileScreen = ({
   const { validateName, validateEmail, validatePhoneNumber } = useValidation();
   const dispatch = useAppDispatch();
   const authState = useAppSelector(selectAuthState);
-  const [displayName, setDisplayName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [displayName, setDisplayName] = useState(profile?.displayName || "");
+  const [email, setEmail] = useState(profile?.email || "");
+  const [phoneNumber, setPhoneNumber] = useState(profile?.phoneNumber || "");
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -135,12 +135,11 @@ const EditProfileScreen = ({
             <Text style={styles.title}>Edit Profile</Text>
           </View>
           <View style={styles.rowWrapper}>
-            <Text style={styles.rowLabel}>Display Name</Text>
             <View style={styles.row}>
               <View style={styles.rowValueContainer}>
-                <TextInput
+                <Input
+                  label={"Display Name"}
                   style={styles.rowValue}
-                  mode="outlined"
                   value={displayName}
                   onChangeText={setDisplayName}
                   placeholder={profile?.displayName || "Enter Display Name"}
@@ -152,12 +151,11 @@ const EditProfileScreen = ({
             </View>
           </View>
           <View style={styles.rowWrapper}>
-            <Text style={styles.rowLabel}>Email Address</Text>
             <View style={styles.row}>
               <View style={styles.rowValueContainer}>
-                <TextInput
+                <Input
+                  label={"Email Address"}
                   style={styles.rowValue}
-                  mode="outlined"
                   value={email}
                   onChangeText={setEmail}
                   placeholder={profile?.email || "Enter Email Address"}
@@ -169,12 +167,11 @@ const EditProfileScreen = ({
             </View>
           </View>
           <View style={styles.rowWrapper}>
-            <Text style={styles.rowLabel}>Phone Number</Text>
             <View style={styles.row}>
               <View style={styles.rowValueContainer}>
-                <TextInput
+                <Input
+                  label={"Phone Number"}
                   style={styles.rowValue}
-                  mode="outlined"
                   value={phoneNumber}
                   onChangeText={setPhoneNumber}
                   placeholder={profile?.phoneNumber || "Enter Phone Number"}
@@ -188,10 +185,9 @@ const EditProfileScreen = ({
 
           <View>
             <Button
-              icon="content-save"
-              mode="contained-tonal"
-              style={{ margin: 24 }}
+              style={{ margin: 24 , marginTop: 5}}
               onPress={() => handleSave(profile)}
+              accessoryLeft={(props) => ( <Icon {...props} name="save-outline" />)}
             >
               Save
             </Button>
@@ -253,6 +249,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     borderColor: "#cccccc",
     flex: 1,
+    height: 50,
+    marginVertical: 2,
   },
   errorText: {
     fontSize: 12,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, Alert, StyleSheet } from "react-native";
-import { Text, TextInput, Button } from "react-native-paper";
+import {Text, Input, Button, Icon} from '@ui-kitten/components';
 import { useFirestore } from "../../hooks/useFirestore";
 import { useValidation } from "../../hooks/useValidation";
 
@@ -96,12 +96,11 @@ const EditPaymentSettingsScreen = ({
           <Text style={styles.title}>Payment Settings</Text>
         </View>
         <View style={styles.rowWrapper}>
-          <Text style={styles.rowLabel}>Venmo Username</Text>
           <View style={styles.row}>
             <View style={styles.rowValueContainer}>
-              <TextInput
+              <Input
+                label={"Venmo Username"}
                 style={styles.rowValue}
-                mode="outlined"
                 value={venmoName}
                 onChangeText={setVenmoName}
                 placeholder={"Enter Venmo Username"}
@@ -113,12 +112,11 @@ const EditPaymentSettingsScreen = ({
           </View>
         </View>
         <View style={styles.rowWrapper}>
-          <Text style={styles.rowLabel}>Cash App Username</Text>
           <View style={styles.row}>
             <View style={styles.rowValueContainer}>
-              <TextInput
+              <Input
+                label={"Cash App Username"}
                 style={styles.rowValue}
-                mode="outlined"
                 value={cashAppName}
                 onChangeText={setCashAppName}
                 placeholder={"Enter Cash App Username"}
@@ -130,12 +128,11 @@ const EditPaymentSettingsScreen = ({
           </View>
         </View>
         <View style={styles.rowWrapper}>
-          <Text style={styles.rowLabel}>PayPal Email</Text>
           <View style={styles.row}>
             <View style={styles.rowValueContainer}>
-              <TextInput
+              <Input
+                label={"PayPal Email"}
                 style={styles.rowValue}
-                mode="outlined"
                 value={paypalEmail}
                 onChangeText={setPaypalEmail}
                 placeholder={"Enter PayPal Email Address"}
@@ -147,10 +144,9 @@ const EditPaymentSettingsScreen = ({
           </View>
         </View>
         <Button
-          icon="content-save"
-          mode="contained-tonal"
           style={{ margin: 24 }}
           onPress={handleSave}
+          accessoryLeft={(props) => <Icon {...props} name="save-outline" />}
         >
           Save
         </Button>
@@ -187,8 +183,10 @@ const styles = StyleSheet.create({
     height: 50,
   },
   rowWrapper: {
-    paddingBottom: 6,
-    paddingTop: 6,
+    borderTopWidth: 1,
+    borderColor: "#e3e3e3",
+    paddingBottom: 12,
+    paddingTop: 12,
   },
   rowLabel: {
     fontSize: 17,
@@ -203,6 +201,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     borderColor: "#cccccc",
     flex: 1,
+    height: 50,
+    marginVertical: 2,
   },
   errorText: {
     fontSize: 12,
