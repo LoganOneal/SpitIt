@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import {
-  useTheme,
-  Snackbar,
-  ActivityIndicator,
-} from "react-native-paper";
-import {
-  Card,
-  Button,
-  Input,
-  Text
-} from "@ui-kitten/components";
+import { useTheme, Snackbar, ActivityIndicator } from "react-native-paper";
+import { Card, Button, Input, Text, Icon } from "@ui-kitten/components";
 import {
   StyleSheet,
   Dimensions,
@@ -56,7 +47,7 @@ export default function SignUpScreen({ navigation }) {
   } = useForm<SignUpFormData>();
 
   const onSubmit = (data: SignUpFormData) => {
-    navigation.navigate("PaymentRegistration", {data: data})
+    navigation.navigate("PaymentRegistration", { data: data });
   };
 
   const onDismissSnackBar = () => setShowSnack(false);
@@ -70,16 +61,11 @@ export default function SignUpScreen({ navigation }) {
   const dynamicContainerHeight = height * dynamicContainerHeightMultiplier;
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar barStyle="light-content" />
         <Animatable.View
-          style={[
-            styles.contentContainer,
-            { height: dynamicContainerHeight },
-          ]}
+          style={[styles.contentContainer, { height: dynamicContainerHeight }]}
           animation="fadeInUpBig"
         >
           <Card style={styles.card}>
@@ -145,49 +131,58 @@ export default function SignUpScreen({ navigation }) {
                 {errors.lastName?.message}
               </Text>
             )}
-
-            <Controller
-              control={control}
-              rules={{
-                required: {
-                  message: AppConstants.ERROR_EmailIsRequired,
-                  value: true,
-                },
-                validate: {
-                  invalidEmail: (value) => {
-                    return validateEmail(value);
+            <View>
+              <Controller
+                control={control}
+                rules={{
+                  required: {
+                    message: AppConstants.ERROR_EmailIsRequired,
+                    value: true,
                   },
-                },
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="Email Address"
-                  textContentType="emailAddress"
-                  // right={
-                  //   watch("emailAddress") &&
-                  //   (validateEmail(value) ? (
-                  //     <TextInput.Icon icon="check" color="green" />
-                  //   ) : (
-                  //     <TextInput.Icon
-                  //       icon="close"
-                  //       color={theme.colors.error}
-                  //     />
-                  //   ))
-                  // }
-                  style={styles.textInput}
-                />
-              )}
-              name="emailAddress"
-            />
-            {errors.emailAddress &&
-              errors.emailAddress.type === "required" && (
-                <Text style={{ color: theme.colors.error }}>
-                  {AppConstants.ERROR_EmailIsRequired}
-                </Text>
-              )}
+                  validate: {
+                    invalidEmail: (value) => {
+                      return validateEmail(value);
+                    },
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <>
+                    <Input
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder="Email Address"
+                      textContentType="emailAddress"
+                      style={styles.textInput}
+                    />
+                    {watch("emailAddress") &&
+                      (validateEmail(value) ? (
+                        <View style={styles.iconContainer}>
+                          <Icon
+                            name="checkmark-circle-2-outline"
+                            fill="green"
+                            style={styles.icon}
+                          />
+                        </View>
+                      ) : (
+                        <View style={styles.iconContainer}>
+                          <Icon
+                            name="close-circle-outline"
+                            fill="red"
+                            style={styles.icon}
+                          />
+                        </View>
+                      ))}
+                  </>
+                )}
+                name="emailAddress"
+              />
+            </View>
+            {errors.emailAddress && errors.emailAddress.type === "required" && (
+              <Text style={{ color: theme.colors.error }}>
+                {AppConstants.ERROR_EmailIsRequired}
+              </Text>
+            )}
             {errors.emailAddress &&
               errors.emailAddress.type === "invalidEmail" && (
                 <Text style={{ color: theme.colors.error }}>
@@ -199,52 +194,54 @@ export default function SignUpScreen({ navigation }) {
                 {AppConstants.ERROR_EmailIsAlreadyRegistered}
               </Text>
             )}
-
-            <Controller
-              control={control}
-              rules={{
-                maxLength: 16,
-                required: true,
-                validate: (val) => {
-                  const isValid = validatePassword(val);
-                  setIsPasswordValid(isValid);
-                  return isValid || AppConstants.ERROR_InvalidPassword;
-                },
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <>
-                  <Input
-                    placeholder="Password"
-                    onBlur={onBlur}
-                    onChangeText={(text) => {
-                      onChange(text);
-                      handlePasswordChange(text);
-                    }}
-                    value={value}
-                    secureTextEntry
-                    textContentType="password"
-                    // right={
-                    //   watch("password") &&
-                    //   watch("password").length > 0 &&
-                    //   (isPasswordValid ? (
-                    //     <TextInput.Icon icon="check" color="green" />
-                    //   ) : (
-                    //     <TextInput.Icon
-                    //       icon="close"
-                    //       color={theme.colors.error}
-                    //     />
-                    //   ))
-                    // }
-                    style={styles.textInput}
-                  />
-                  <PasswordRequirements
-                    password={password}
-                    show={isPasswordValid}
-                  />
-                </>
-              )}
-              name="password"
-            />
+            <View>
+              <Controller
+                control={control}
+                rules={{
+                  maxLength: 16,
+                  required: true,
+                  validate: (val) => {
+                    const isValid = validatePassword(val);
+                    setIsPasswordValid(isValid);
+                    return isValid || AppConstants.ERROR_InvalidPassword;
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <>
+                    <Input
+                      placeholder="Password"
+                      onBlur={onBlur}
+                      onChangeText={(text) => {
+                        onChange(text);
+                        handlePasswordChange(text);
+                      }}
+                      value={value}
+                      secureTextEntry
+                      textContentType="password"
+                      style={styles.textInput}
+                    />
+                    {watch("password") && watch("password").length > 0 && (
+                      <View style={styles.iconContainer}>
+                        <Icon
+                          name={
+                            isPasswordValid
+                              ? "checkmark-circle-2-outline"
+                              : "close-circle-outline"
+                          }
+                          fill={isPasswordValid ? "green" : "red"}
+                          style={styles.icon}
+                        />
+                      </View>
+                    )}
+                    <PasswordRequirements
+                      password={password}
+                      show={isPasswordValid}
+                    />
+                  </>
+                )}
+                name="password"
+              />
+            </View>
             {errors.password && errors.password.type === "required" && (
               <Text style={{ color: theme.colors.error }}>
                 {AppConstants.ERROR_PasswordIsRequired}
@@ -255,43 +252,57 @@ export default function SignUpScreen({ navigation }) {
                 {AppConstants.ERROR_InvalidPassword}
               </Text>
             )}
-
-            <Controller
-              control={control}
-              rules={{
-                maxLength: 16,
-                required: true,
-                validate: (val) => {
-                  if (watch("password") != val) {
-                    return AppConstants.ERROR_ConfirmPassword;
-                  }
-                },
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  placeholder={AppConstants.PLACEHOLDER_ConfirmPassword}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  secureTextEntry
-                  textContentType="password"
-                  // right={
-                  //   watch("password") &&
-                  //   watch("password").length > 0 &&
-                  //   (watch("password") === value ? (
-                  //     <TextInput.Icon icon="check" color="green" />
-                  //   ) : (
-                  //     <TextInput.Icon
-                  //       icon="close"
-                  //       color={theme.colors.error}
-                  //     />
-                  //   ))
-                  // }
-                  style={styles.textInput}
-                />
-              )}
-              name="confirmPassword"
-            />
+            <View>
+              <Controller
+                control={control}
+                rules={{
+                  maxLength: 16,
+                  required: true,
+                  validate: (val) => {
+                    if (watch("password") != val) {
+                      return AppConstants.ERROR_ConfirmPassword;
+                    }
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <>
+                    <Input
+                      placeholder={AppConstants.PLACEHOLDER_ConfirmPassword}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      secureTextEntry
+                      textContentType="password"
+                      style={styles.textInput}
+                    />
+                    {watch("password") &&
+                    watch("password").length > 0 &&
+                    watch("password") === value ? (
+                      <View style={styles.iconContainer}>
+                        <Icon
+                          name="checkmark-circle-2-outline"
+                          fill="green"
+                          style={styles.icon}
+                        />
+                      </View>
+                    ) : (
+                      <>
+                        {value?.length > 0 && (
+                          <View style={styles.iconContainer}>
+                            <Icon
+                              name="close-circle-outline"
+                              fill="red"
+                              style={styles.icon}
+                            />
+                          </View>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+                name="confirmPassword"
+              />
+            </View>
             {errors.confirmPassword &&
               errors.confirmPassword.type === "required" && (
                 <Text style={{ color: theme.colors.error }}>
@@ -305,10 +316,7 @@ export default function SignUpScreen({ navigation }) {
                 </Text>
               )}
 
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              style={styles.button}
-            >
+            <Button onPress={handleSubmit(onSubmit)} style={styles.button}>
               Sign Up
             </Button>
             <Button
@@ -368,9 +376,19 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    marginBottom: 35
+    marginBottom: 35,
   },
   spinner: {
-    marginTop: 5
-  }
+    marginTop: 5,
+  },
+
+  iconContainer: {
+    position: "absolute",
+    right: 8,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    top: 15,
+  },
 });
