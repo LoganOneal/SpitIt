@@ -5,28 +5,30 @@ import {
 } from "@react-navigation/drawer";
 import * as React from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
-import { Text, Button, Divider, useTheme } from "react-native-paper";
+import { Text, Button, Divider, Icon } from "@ui-kitten/components";
 import ThemeToggle from "./ThemeToggle";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { selectAuthState, userLoggedOut } from "../store/authSlice";
 
 const DrawerContent = (props) => {
-  const theme = useTheme();
   const dispatch = useAppDispatch();
   const authState = useAppSelector(selectAuthState);
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.drawerContainer}>
         <View style={styles.drawerHeader}>
-          <Text variant="bodyLarge" style={{ color: theme.colors.primary }}>
-            Welcome {authState?.userName ?? "N/A"}
-          </Text>
+          <Text category="h5">Welcome {authState?.userName ?? "N/A"}</Text>
         </View>
         <Divider style={{ alignSelf: "stretch" }} />
         <View style={styles.drawerItem}>
-          {/*ADD OTHER DRAWER ITEMS HERE */}
-          <DrawerItem label="Home" onPress={() => props.navigation.navigate("Home")} />
-          <DrawerItem label="Settings" onPress={() => props.navigation.navigate("Settings")} />
+          <DrawerItem
+            label="Home"
+            onPress={() => props.navigation.navigate("Home")}
+          />
+          <DrawerItem
+            label="Settings"
+            onPress={() => props.navigation.navigate("Settings")}
+          />
         </View>
         <Divider style={{ alignSelf: "stretch" }} />
         <View style={styles.drawerFooter}>
@@ -35,11 +37,13 @@ const DrawerContent = (props) => {
           </View>
           <View style={styles.drawerItem}>
             <Button
-              icon="logout"
-              mode="contained-tonal"
               onPress={() => dispatch(userLoggedOut())}
+              accessoryLeft={(props) => (
+                <Icon {...props} name="log-out-outline" />
+              )}
+              style={{ justifyContent: "center" }}
             >
-              Log out
+              Log Out
             </Button>
           </View>
         </View>

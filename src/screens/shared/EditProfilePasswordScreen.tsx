@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View, ScrollView, Alert, StyleSheet } from "react-native";
 import * as AppConstants from "../../constants/constants";
-import { Text, Button, useTheme, TextInput } from "react-native-paper";
+import { Text, Button, Input, Icon } from "@ui-kitten/components";
 import PasswordRequirements from "../../components/PasswordRequirements";
 import { useValidation } from "../../hooks/useValidation";
 import { updatePassword } from "firebase/auth";
@@ -16,11 +16,7 @@ type EditProfilePasswordData = {
 };
 
 const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
-  const {
-    control,
-    watch
-  } = useForm<EditProfilePasswordData>();
-  const theme = useTheme();
+  const { control, watch } = useForm<EditProfilePasswordData>();
   const { reauthenticateUser } = useFirestore();
   const { validatePassword } = useValidation();
   const [password, setPassword] = useState("");
@@ -66,7 +62,7 @@ const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
           },
         ]);
       }
-    } catch (error) {
+    } catch (error: any) {
       setPasswordError(error.message);
     }
   };
@@ -87,9 +83,8 @@ const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <>
-                    <TextInput
+                    <Input
                       label={AppConstants.LABEL_Password}
-                      mode="outlined"
                       placeholder="Enter Current Password"
                       onBlur={onBlur}
                       onChangeText={(text) => {
@@ -111,7 +106,6 @@ const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
             <Text style={styles.errorText}>{passwordError}</Text>
           )}
         </View>
-        <View style={styles.row} />
         <View style={styles.rowWrapper}>
           <View style={styles.row}>
             <View style={styles.rowValueContainer}>
@@ -127,10 +121,9 @@ const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
                   },
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <>
-                    <TextInput
+                  <View style={styles.rowValueNewPassContainer}>
+                    <Input
                       label={AppConstants.LABEL_NewPassword}
-                      mode="outlined"
                       placeholder="New Password"
                       onBlur={onBlur}
                       onChangeText={(text) => {
@@ -140,21 +133,23 @@ const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
                       value={value}
                       secureTextEntry
                       textContentType="password"
-                      right={
-                        watch("newPassword") &&
-                        watch("newPassword").length > 0 &&
-                        (isPasswordValid ? (
-                          <TextInput.Icon icon="check" color="green" />
-                        ) : (
-                          <TextInput.Icon
-                            icon="close"
-                            color={theme.colors.error}
-                          />
-                        ))
-                      }
                       style={styles.rowValue}
                     />
-                  </>
+                    {watch("newPassword") &&
+                      watch("newPassword").length > 0 && (
+                        <View style={styles.iconContainer}>
+                          <Icon
+                            name={
+                              isPasswordValid
+                                ? "checkmark-circle-2-outline"
+                                : "close-circle-outline"
+                            }
+                            fill={isPasswordValid ? "green" : "red"}
+                            style={styles.icon}
+                          />
+                        </View>
+                      )}
+                  </View>
                 )}
                 name="newPassword"
               />
@@ -184,32 +179,35 @@ const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
                   },
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label={AppConstants.LABEL_ConfirmPassword}
-                    mode="outlined"
-                    placeholder={AppConstants.PLACEHOLDER_ConfirmPassword}
-                    onBlur={onBlur}
-                    onChangeText={(text) => {
-                      onChange(text);
-                      handleConfirmNewPasswordChange(text);
-                    }}
-                    value={value}
-                    secureTextEntry
-                    textContentType="password"
-                    right={
-                      watch("confirmNewPassword") &&
-                      watch("confirmNewPassword").length > 0 &&
-                      (passwordsMatch ? (
-                        <TextInput.Icon icon="check" color="green" />
-                      ) : (
-                        <TextInput.Icon
-                          icon="close"
-                          color={theme.colors.error}
-                        />
-                      ))
-                    }
-                    style={styles.rowValue}
-                  />
+                  <View style={styles.rowValueNewPassContainer}>
+                    <Input
+                      label={AppConstants.LABEL_ConfirmPassword}
+                      placeholder={AppConstants.PLACEHOLDER_ConfirmPassword}
+                      onBlur={onBlur}
+                      onChangeText={(text) => {
+                        onChange(text);
+                        handleConfirmNewPasswordChange(text);
+                      }}
+                      value={value}
+                      secureTextEntry
+                      textContentType="password"
+                      style={styles.rowValue}
+                    />
+                    {watch("confirmNewPassword") &&
+                      watch("confirmNewPassword").length > 0 && (
+                        <View style={styles.iconContainer}>
+                          <Icon
+                            name={
+                              passwordsMatch
+                                ? "checkmark-circle-2-outline"
+                                : "close-circle-outline"
+                            }
+                            fill={passwordsMatch ? "green" : "red"}
+                            style={styles.icon}
+                          />
+                        </View>
+                      )}
+                  </View>
                 )}
                 name="confirmNewPassword"
               />
@@ -217,11 +215,10 @@ const EditProfilePasswordScreen = ({ navigation }: { navigation: any }) => {
           </View>
         </View>
         <Button
-          icon="content-save"
-          mode="contained-tonal"
           style={{ margin: 24 }}
           onPress={handleSave}
           disabled={!passwordsMatch}
+          accessoryLeft={(props) => <Icon {...props} name="save-outline" />}
         >
           Save
         </Button>
@@ -259,7 +256,7 @@ const styles = StyleSheet.create({
   rowWrapper: {
     borderTopWidth: 1,
     borderColor: "#e3e3e3",
-    paddingBottom: 12,
+    paddingBottom: 24,
     paddingTop: 12,
   },
   rowLabel: {
@@ -275,7 +272,10 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     borderColor: "#cccccc",
     flex: 1,
+    height: 50,
+    marginVertical: 2,
   },
+
   errorText: {
     fontSize: 12,
     fontWeight: "500",
@@ -292,10 +292,23 @@ const styles = StyleSheet.create({
     paddingRight: 24,
     paddingLeft: 24,
   },
+  rowValueNewPassContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 
   passwordRequirements: {
     marginLeft: 24,
     marginRight: 24,
     paddingBottom: 12,
+  },
+  iconContainer: {
+    position: "absolute",
+    right: 8,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    top: 12,
   },
 });
