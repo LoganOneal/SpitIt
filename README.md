@@ -21,7 +21,7 @@ git clone https://github.com/LoganOneal/splitit.git
 ```
 2. Navigate to the project directory
 ```bash
-   cd splitit
+cd splitit
 ```
 3. Install dependencies:
 ```bash
@@ -33,7 +33,7 @@ npm start
 ```
 5. Follow the Expo CLI instructions to open the app on your device or emulator.
 
-##Technologies Used
+## Technologies Used
 React Native: For building the cross-platform mobile app.
 Expo: For facilitating development and deployment of React Native apps.
 Firebase: For backend services such as authentication, data storage, and real-time updates.
@@ -42,5 +42,5 @@ React Native Camera: For capturing receipts using the device's camera.
 React Native Kitten UI: For UI components and theming.
 
 
-##License
+## License
 This project is licensed under the MIT License
