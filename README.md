@@ -17,7 +17,7 @@ Make sure you have Node.js and Expo CLI installed on your development machine. T
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/your-username/splitease.git
+git clone https://github.com/LoganOneal/splitit.git
 ```
 2. Navigate to the project directory
 ```bash
